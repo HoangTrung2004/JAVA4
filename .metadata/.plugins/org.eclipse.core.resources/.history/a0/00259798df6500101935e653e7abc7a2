@@ -1,0 +1,56 @@
+package Listener;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
+
+import java.io.*;
+
+@WebListener
+public class VisitorListener implements ServletContextListener, HttpSessionListener {
+    private static final String COUNTER_FILE = "D://HK_4//BLOCK2//JAVA4/counter.txt";
+    // Khi ứng dụng khởi động
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        int visitors = 0;
+        // Đọc số đếm từ file (nếu có)
+        try (BufferedReader reader = new BufferedReader(new FileReader(COUNTER_FILE))) {
+            String line = reader.readLine();
+            if (line != null) {
+                visitors = Integer.parseInt(line);
+            }
+        } catch (Exception e) {
+            visitors = 0;
+        }
+        // Lưu số đếm vào application scope
+        ServletContext app = sce.getServletContext();
+        app.setAttribute("visitors", visitors);
+    }
+
+    // Khi có khách truy cập lần đầu (tạo session mới)
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        ServletContext app = se.getSession().getServletContext();
+        synchronized (app) {
+            int visitors = (int) app.getAttribute("visitors");
+            visitors++;
+            app.setAttribute("visitors", visitors);
+        }
+    }
+
+    // Khi ứng dụng bị tắt hoặc dừng
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ServletContext app = sce.getServletContext();
+        int visitors = (int) app.getAttribute("visitors");
+        // Ghi lại số đếm vào file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(COUNTER_FILE))) {
+            writer.write(String.valueOf(visitors));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

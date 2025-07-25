@@ -1,0 +1,26 @@
+package Servlet;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+import java.io.IOException;
+
+@WebServlet("/json")
+public class JsonServlet1 extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        //resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        
+        String json = """
+            {
+                "manv": "TeoNV",
+                "hoTen": "Nguyễn Văn Tèo",
+                "gioiTinh": true,
+                "luong": 950.5
+            }
+        """;
+        resp.getWriter().write(json);
+    }
+}

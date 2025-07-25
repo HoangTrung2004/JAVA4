@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Danh sách </title>
+</head>
+<body>
+	
+	<div>
+	<input id="id" placeholder="Id?"> <br>
+	<input id="name" placeholder="Name?"> <br>
+	<input type="radio" id="male" name= "gender" checked> Male 
+	<input type="radio" id="female" name= "gender" checked> Female <br>
+	<input id="salary" placeholder="Salary?"> <br>
+	<input id="id" placeholder="Id?"> <br>
+	
+	</div>	
+</body>
+</html>

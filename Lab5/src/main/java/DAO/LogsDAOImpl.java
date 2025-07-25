@@ -1,0 +1,19 @@
+package DAO;
+
+import Entity.Logs;
+import Utils.XJPA;
+import jakarta.persistence.EntityManager;
+
+public class LogsDAOImpl implements LogsDAO {
+    @Override
+    public void create(Logs log) {
+        EntityManager em = XJPA.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(log);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+}

@@ -1,0 +1,44 @@
+package Filter;
+
+import DAO.LogsDAO;
+import DAO.LogsDAOImpl;
+import Entity.Logs;
+import Entity.Users;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.util.Date;
+
+@WebFilter("/*") // Lọc tất cả các request
+public class AppFilter implements Filter {
+    private LogsDAO logsDAO = new LogsDAOImpl();
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        // Đặt mã hóa UTF-8
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        // Lưu log truy cập nếu đã đăng nhập
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpSession session = req.getSession(false);
+
+        Users user = null;
+        if (session != null) {
+            user = (Users) session.getAttribute("user");
+        }
+
+        if (user != null) {
+            Logs log = new Logs();
+            log.setUrl(req.getRequestURI());
+            log.setTime(new Date());
+            log.setUserId(user.getId);
+            logsDAO.create(log);
+        }
+        chain.doFilter(request, response);
+    }
+}

@@ -1,0 +1,42 @@
+package Servlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.*;
+import java.nio.file.Files;
+
+@WebServlet("/Lab7/upload") // Khi client gửi POST lên /Lab7/upload thì Servlet này xử lý
+@MultipartConfig             // Báo với server đây là Servlet hỗ trợ upload file (multipart/form-data)
+public class UploadServlet2 extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // 1. Lấy file từ request (tên input HTML là "file")
+        Part filePart = req.getPart("file");
+        String fileName = filePart.getSubmittedFileName(); // Tên file gốc người dùng upload
+        String type = filePart.getContentType();           // Loại file (vd: image/png, application/pdf,...)
+        long size = filePart.getSize();                    // Kích thước file (byte)
+
+        // 2. Đường dẫn thư mục uploads trong webapp để lưu file
+        String appPath = req.getServletContext().getRealPath("/uploads");
+        File uploadDir = new File(appPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();       // Tạo thư mục nếu chưa có
+
+        // 3. Lưu file vào thư mục uploads
+        File file = new File(uploadDir, fileName);         // Đường dẫn file đích
+        try (InputStream input = filePart.getInputStream()) {
+            Files.copy(input, file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        // 4. Trả về kết quả JSON cho client (thông tin file)
+        resp.setContentType("application/json");           // Kiểu dữ liệu trả về là JSON
+        resp.setCharacterEncoding("utf-8");                // Mã hóa UTF-8 (hỗ trợ tiếng Việt)
+        String json = String.format(
+            "{\"name\":\"%s\", \"type\":\"%s\", \"size\":%d}", 
+            fileName, type, size
+        );
+        resp.getWriter().write(json);                      // Gửi dữ liệu JSON về cho client
+    }
+}

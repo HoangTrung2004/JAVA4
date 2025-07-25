@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Upload</title>
+</head>
+<body>
+	  <input type="file" id="fileInput">
+    <button onclick="upload()">Upload</button>
+    <script>
+    function upload() {
+        var formData = new FormData();
+        var fileInput = document.getElementById('fileInput');
+        formData.append('file', fileInput.files[0]);
+        // Sửa lại đúng context path (Lab7 là tên project khi deploy trên Tomcat)
+        fetch('/Lab7/upload', { // Nếu context path là Lab7
+            method: 'POST',
+            body: formData
+        })
+        .then(resp => resp.json())
+        .then(json => {
+            console.log(json);
+            alert("Upload thành công! Xem console.");
+        });
+    }
+    </script>
+</body>
+</html>

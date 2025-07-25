@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bài 1</title>
+</head>
+<body>
+	 <h3>Bấm nút để lấy dữ liệu JSON từ Servlet (xem kết quả ở Console)</h3>
+    <button onclick="getJson()">Lấy dữ liệu JSON</button>
+    <script>
+    function getJson() {
+        fetch('/json')
+            .then(resp => resp.json())
+            .then(json => {
+                console.log(json);
+                alert("Đã lấy được dữ liệu! Xem console.");
+            });
+    }
+    </script>
+</body>
+</html>

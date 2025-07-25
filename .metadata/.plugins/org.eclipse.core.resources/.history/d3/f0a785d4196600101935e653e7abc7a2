@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Danh sách </title>
+</head>
+<body>
+	
+	<div>
+		<input id="id" placeholder="Id?"> <br>
+		<input id="name" placeholder="Name?"> <br>
+		<input type="radio" id="male" name= "gender" checked> Male 
+		<input type="radio" id="female" name= "gender" > Female <br>
+		<input id="salary" placeholder="Salary?"> <br>
+	</div>	
+	<hr>
+	
+	<button onclick="ctr.create()" >Create</button>
+	<button onclick="ctr.update()" >Update</button>
+	<button onclick="ctr.delete()" >Delete</button>
+	<button onclick="ctr.reset()" >Reset</button>
+	
+	<hr>
+	
+	<table bode="1" style="width: 100px">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Gender</th>
+				<th>Salary</th>
+				<th></th>
+			</tr>	
+		</thead>
+		
+		<tbody id="list"></tbody>
+		
+	</table>
+	
+	
+	<script >
+		var ctr = {
+				setForm(employee){
+					document.getElementById("id").value = employee.id;
+			        document.getElementById("name").value = employee.name;
+			        document.getElementById("salary").value = employee.salary;
+			        if(employee.gender){
+			            document.getElementById("male").checked = true;
+			        } else {
+			            document.getElementById("female").checked = true;
+			        }
+				},
+				
+				getForm(employee){
+					return {
+					id: document.getElementById("id").value,
+					name: document.getElementById("name").value,
+		            gender: document.getElementById("male").checked,
+		            salary: parseFloat(document.getElementById("salary").value)
+						}
+				},
+				
+				fillTable(employee){
+					var rows = [];
+					employee.forEach(e => {
+						var row = `<tr>
+			                <td>${e.id}</td>
+			                <td>${e.name}</td>
+			                <td>${e.gender?'Male':'Female'}</td>
+			                <td>${e.salary}</td>
+			                <td><a href="javascript:ctrl.edit('${e.id}')">Edit</a></td>
+			            </tr>`;
+			            rows.push(row);
+					});
+					document.getElementById("list").innerHTML = rows.join('');
+				},
+				
+				loadAll() {
+			        fetch('/Lab7/employees', {method: "GET"})
+			            .then(resp => resp.json())
+			            .then(employees => {
+			                this.fillToTable(employees);
+			            });
+			    },
+			    
+			    create() { 
+			        var data = this.getForm();
+			        fetch('/Lab7/employees', {
+			            method: "POST",
+			            headers: {"Content-Type": "application/json"},
+			            body: JSON.stringify(data)
+			        }).then(resp => resp.json()).then(json => {
+			            this.loadAll();
+			            this.reset();
+			        });
+			    },
+			    
+			    update() { 
+			        var data = this.getForm();
+			        fetch(`/Lab7/employees/${data.id}`, {
+			            method: "PUT",
+			            headers: {"Content-Type": "application/json"},
+			            body: JSON.stringify(data)
+			        }).then(resp => resp.json()).then(json => {
+			            this.loadAll();
+			        });
+			    },
+			    
+			    delete() { 
+			        var id = document.getElementById("id").value;
+			        fetch(`/Lab7/employees/${id}`, {method: "DELETE"})
+			            .then(resp => resp.json())
+			            .then(json => {
+			                this.loadAll();
+			                this.reset();
+			            });
+			    },
+			    
+			    reset() { 
+			        var employee = {id:"", name:"", salary:0, gender:true};
+			        this.setForm(employee);
+			    },
+			    
+			    edit(id) { 
+			        fetch(`/Lab7/employees/${id}`, {method: "GET"})
+			            .then(resp => resp.json())
+			            .then(employee => {
+			                this.setForm(employee);
+			            });
+			    }
+					
+		};
+		
+		ctrl.loadAll();
+	</script>
+</body>
+</html>

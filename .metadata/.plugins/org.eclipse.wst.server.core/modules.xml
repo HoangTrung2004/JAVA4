@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modules>
+  <module moduleId="org.eclipse.jst.jee.server:Lab8" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab6" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab7" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab4" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab5" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab2" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Lab3" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:asm" serverId="apache-tomcat-10.1.24 at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:ASM1" serverId="apache-tomcat-10.1.24 at localhost"/>
+</modules>

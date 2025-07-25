@@ -1,0 +1,54 @@
+package test;
+
+import java.util.List;
+
+import DAO.ShareDAO;
+import DAO.ShareDAOImpl;
+import DAO.UsersDAO;
+import DAO.UsersDAOImpl;
+import DAO.VideoDAO;
+import DAO.VideoDAOImpl;
+import Entity.Users;
+
+public class MainTest {
+    public static void main(String[] args) {
+        UsersDAO usersDAO = new UsersDAOImpl();
+        VideoDAO videoDAO = new VideoDAOImpl();
+        ShareDAO shareDAO = new ShareDAOImpl();
+
+        // 1. Tìm user theo id hoặc email
+        Users user = usersDAO.findByIdOrEmail("admin01");
+        System.out.println("User: " + (user != null ? user.getFullname() : "Không tìm thấy"));
+
+        // 2. Tìm video theo từ khóa
+        System.out.println("\nTìm video chứa từ 'phim':");
+        videoDAO.findByKeyword("phim").forEach(v -> System.out.println("- " + v.getTitle()));
+
+        // 3. Top 10 video được yêu thích
+        System.out.println("\nTop 10 video được yêu thích:");
+        List<Object[]> top = videoDAO.findTop10MostFavoritedVideos();
+        for (Object[] row : top) {
+            System.out.println("Video: " + row[1] + " | Lượt thích: " + row[2]);
+        }
+
+        // 4. Video không ai thích
+        System.out.println("\nVideo không có lượt yêu thích:");
+        videoDAO.findUnfavoritedVideos().forEach(v -> System.out.println("- " + v.getTitle()));
+
+        // 5. Video chia sẻ trong 2024
+        System.out.println("\nVideo chia sẻ trong 2024:");
+        shareDAO.findSharedIn2024().forEach(s ->
+            System.out.println("Video: " + s.getVideo().getTitle() + " | Người chia sẻ: " + s.getUser().getFullname())
+        );
+
+        // 6. Thống kê chia sẻ theo video
+        System.out.println("\nThống kê chia sẻ:");
+        List<Object[]> stats = shareDAO.getShareStatsByVideo();
+        for (Object[] row : stats) {
+            System.out.println("Video: " + row[0] +
+                " | Số lượt chia sẻ: " + row[1] +
+                " | Ngày đầu: " + row[2] +
+                " | Ngày cuối: " + row[3]);
+        }
+    }
+}

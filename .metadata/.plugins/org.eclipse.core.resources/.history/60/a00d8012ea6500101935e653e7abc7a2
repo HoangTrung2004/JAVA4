@@ -1,0 +1,42 @@
+package Servlet;
+
+import DAO.UserDAO;
+import DAO.UserDAOImpl;
+import Entity.User;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+
+import java.io.IOException;
+
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
+    private UserDAO userDAO = new UserDAOImpl();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+        String pw = req.getParameter("password");
+
+        User user = userDAO.findByUsername(id);
+        if (user != null && user.getPassword().equals(pw)) {
+            req.getSession().setAttribute("user", user);
+
+            String uri = (String) req.getSession().getAttribute("securityUri");
+            if (uri != null) {
+                req.getSession().removeAttribute("securityUri");
+                resp.sendRedirect(uri);
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/");
+            }
+        } else {
+            req.setAttribute("error", "Sai tài khoản hoặc mật khẩu");
+            req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
+        }
+    }
+}

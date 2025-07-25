@@ -1,0 +1,38 @@
+package Servlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.*;
+
+@WebServlet("/Lab7/upload") // lưu ý: nên mapping có /Lab7 nếu project deploy là Lab7
+@MultipartConfig
+public class UploadServlet2 extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // Lấy file người dùng upload
+        Part filePart = req.getPart("file"); // tên input HTML là "file"
+        String fileName = filePart.getSubmittedFileName();
+        String type = filePart.getContentType();
+        long size = filePart.getSize();
+
+        // Đường dẫn thư mục lưu file (trong webapp/uploads)
+        String appPath = req.getServletContext().getRealPath("/uploads");
+        File uploadDir = new File(appPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+
+        // Lưu file vào thư mục uploads
+        File file = new File(uploadDir, fileName);
+        try (InputStream input = filePart.getInputStream()) {
+            Files.copy(input, file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        // Trả về JSON cho client
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("utf-8");
+        String json = String.format("{\"name\":\"%s\", \"type\":\"%s\", \"size\":%d}", fileName, type, size);
+        resp.getWriter().write(json);
+    }
+}

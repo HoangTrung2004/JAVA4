@@ -1,0 +1,39 @@
+package servlet;
+
+import java.io.IOException;
+import java.util.List;
+
+import DAO.VideoReportDAO;
+import Entity.ShareInfo;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/report")
+public class ReportServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            VideoReportDAO dao = new VideoReportDAO();
+            List<ShareInfo> list = dao.getShareStatistics();
+
+            if (list == null || list.isEmpty()) {
+                request.setAttribute("noData", "Không có dữ liệu chia sẻ nào!");
+            } else {
+                request.setAttribute("shareList", list);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Lỗi khi lấy dữ liệu thống kê!");
+        }
+
+        request.getRequestDispatcher("/views/report.jsp").forward(request, response);
+    }
+}

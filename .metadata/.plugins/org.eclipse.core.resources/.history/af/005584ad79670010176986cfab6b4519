@@ -1,0 +1,62 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
+<h2>Tìm video yêu thích theo User ID</h2>
+
+<form method="get" action="">
+    <label>Nhập User ID:</label>
+    <input type="text" name="id" placeholder="Ví dụ: admin01" required />
+    <button type="submit">Xem danh sách</button>
+</form>
+
+<h2>${user.fullname}</h2>
+<h3>Các video đã yêu thích:</h3>
+
+<c:choose>
+  <c:when test="${empty favorites}">
+    <p>Không có video yêu thích nào.</p>
+  </c:when>
+  <c:otherwise>
+    <ul>
+      <c:forEach var="favorite" items="${favorites}">
+        <li>${favorite.video.title}</li>
+      </c:forEach>
+    </ul>
+  </c:otherwise>
+</c:choose>
+
+ 
+ 
+<%-- <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<h2>Tìm video yêu thích theo User ID</h2>
+
+<form method="get" action="">
+    <label>Nhập User ID:</label>
+    <input type="text" name="id" placeholder="Ví dụ: admin01" required />
+    <button type="submit">Xem danh sách</button>
+</form>
+
+<hr/>
+
+<c:if test="${not empty user}">
+    <h3>Người dùng: ${user.fullname}</h3>
+    <h4>Các video đã yêu thích:</h4>
+
+    <c:choose>
+        <c:when test="${empty favorites}">
+            <p>Không có video yêu thích nào.</p>
+        </c:when>
+        <c:otherwise>
+            <ul>
+                <c:forEach var="favorite" items="${favorites}">
+                    <li>${favorite.video.title}</li>
+                </c:forEach>
+            </ul>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+ --%>
+ 
