@@ -15,5 +15,7 @@ public class LogsDAOImpl implements LogsDAO {
         } finally {
             em.close();
         }
+        
     }
+
 }
